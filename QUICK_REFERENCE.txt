@@ -1,0 +1,164 @@
+╔════════════════════════════════════════════════════════════════╗
+║     REAL-TIME STOCK MANAGEMENT SYSTEM - QUICK REFERENCE        ║
+╚════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚀 QUICK START (3 STEPS)                                        │
+└─────────────────────────────────────────────────────────────────┘
+
+  STEP 1 - COMPILE (Only once):
+    .\run.ps1 compile
+
+  STEP 2 - START SERVER (Terminal 1):
+    .\run.ps1 server
+
+  STEP 3 - START CLIENT (Terminal 2, 3, 4...):
+    .\run.ps1 client
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📜 AVAILABLE COMMANDS                                           │
+└─────────────────────────────────────────────────────────────────┘
+
+  PowerShell Scripts:
+    .\run.ps1 compile  - Compile all Java files
+    .\run.ps1 server   - Start the server
+    .\run.ps1 client   - Start a client
+    .\run.ps1 test     - Run stress test (20 concurrent clients)
+    .\run.ps1 clean    - Remove .class files
+    .\run.ps1 help     - Show help
+
+  OR Manual Commands:
+    javac *.java              - Compile
+    java Server               - Start server
+    java SimpleClient         - Start client
+    java ConcurrentStressTest - Run tests
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 💬 CLIENT COMMANDS (Once Connected)                            │
+└─────────────────────────────────────────────────────────────────┘
+
+  ALL USERS:
+    LIST                    - List all products
+    BUY_STOCK <id> <qty>    - Buy product (e.g., BUY_STOCK 1 5)
+    ANALYTICS               - Calculate total inventory value
+    LOW_STOCK [threshold]   - Show low stock items (default: 20)
+    DAILY_REPORT            - Generate detailed report
+    HELP                    - Show all commands
+    EXIT                    - Disconnect
+
+  ADMIN ONLY:
+    ADD_PRODUCT <name> <qty> <price>  - Add new product
+    ADD_STOCK <id> <qty>              - Add stock
+    UPDATE_PRICE <id> <price>         - Update price
+    REMOVE_PRODUCT <id>               - Remove product
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📦 SAMPLE INVENTORY (Pre-loaded)                               │
+└─────────────────────────────────────────────────────────────────┘
+
+  ID: 1 - Laptop      - Qty: 10  - Price: $999.99
+  ID: 2 - Mouse       - Qty: 50  - Price: $25.50
+  ID: 3 - Keyboard    - Qty: 30  - Price: $75.00
+  ID: 4 - Monitor     - Qty: 15  - Price: $299.99
+  ID: 5 - USB Cable   - Qty: 100 - Price: $9.99
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧪 TESTING SCENARIOS                                            │
+└─────────────────────────────────────────────────────────────────┘
+
+  TEST 1 - Basic Functionality:
+    1. Start server
+    2. Connect 1 client
+    3. Try: LIST, BUY_STOCK 1 2, ANALYTICS
+
+  TEST 2 - Thread Safety (Multiple Clients):
+    1. Start server
+    2. Open 3 client terminals
+    3. All clients try: BUY_STOCK 1 3
+    4. Check inventory stays consistent
+
+  TEST 3 - Admin Priority:
+    1. Connect as admin (username: admin, prompt: yes)
+    2. Connect as user (username: user1, prompt: no)
+    3. Check server logs - admin has higher priority
+
+  TEST 4 - Automated Stress Test:
+    1. Start server
+    2. Run: .\run.ps1 test
+    3. 20 clients perform 10 operations each
+    4. Verify all pass without deadlock
+
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ REQUIREMENTS COVERAGE                                        │
+└─────────────────────────────────────────────────────────────────┘
+
+  [A] Threads/Runnable    → New thread per client
+  [B] Thread Influencing  → Admin priority + timeout interrupt
+  [C] Joining Threads     → DAILY_REPORT command
+  [D] Liveness/Deadlock   → Lock ordering prevents deadlock
+  [E] Synchronization     → synchronized methods/blocks
+  [F] Lock Interface      → ReentrantLock for price updates
+  [G] Parallel Streams    → ANALYTICS command
+  [H] Testing             → ConcurrentStressTest.java
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔧 TROUBLESHOOTING                                              │
+└─────────────────────────────────────────────────────────────────┘
+
+  "Cannot connect to server"
+    → Start server first: .\run.ps1 server
+
+  "Port 8888 already in use"
+    → Close existing server or change PORT in Server.java
+
+  "javac is not recognized"
+    → Install JDK 17+ and add to PATH
+
+  Client disconnects immediately
+    → Check server is running and no errors shown
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📂 PROJECT FILES                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+  Server.java              - Main server (port 8888)
+  ClientHandler.java       - Handles each client (separate thread)
+  InventoryManager.java    - Thread-safe inventory management
+  Product.java             - Product data model
+  ConcurrentStressTest.java - Automated testing (20+ clients)
+  SimpleClient.java        - Interactive client
+  run.ps1                  - Helper script
+  README.md                - Full documentation
+  HOW_TO_RUN.md            - Detailed instructions
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📺 EXAMPLE SESSION                                              │
+└─────────────────────────────────────────────────────────────────┘
+
+  > .\run.ps1 server
+  Server starting on port 8888...
+  Server is running and waiting for connections...
+
+  [In another terminal]
+  > .\run.ps1 client
+  Enter your username: John
+  Are you an admin? (yes/no): no
+  Welcome John!
+
+  > LIST
+  Product[ID=1, Name=Laptop, Qty=10, Price=999.99]
+  ...
+
+  > BUY_STOCK 1 2
+  SUCCESS: Purchased 2 units of Laptop. Total: $1999.98
+
+  > ANALYTICS
+  Total Inventory Value: $15149.81
+
+  > EXIT
+  Goodbye John!
+
+╔════════════════════════════════════════════════════════════════╗
+║  Need help? Check HOW_TO_RUN.md for detailed instructions     ║
+╚════════════════════════════════════════════════════════════════╝
+
